@@ -18,6 +18,13 @@ activity_labels = read.table('./dataset/UCI HAR Dataset/activity_labels.txt')
 # Checking all feature names
 head(features)
 
+# Checking all activity names
+activity_labels
+
+# Renaming activity colnames
+colnames(activity_labels) <- c('activityID', 'activityName')
+
+
 ## Task 1: Merge the training and the test sets to create one data set.
 
 # Train data
@@ -25,7 +32,8 @@ X_train = read.table('./dataset/UCI HAR Dataset/train/X_train.txt')
 y_train = read.table('./dataset/UCI HAR Dataset/train/y_train.txt')
 subject_train = read.table('./dataset/UCI HAR Dataset/train/subject_train.txt')
 
-# Assigning colnames to train variables
+# 1.2: Assigning colnames to train variables
+# Note that this part accomplishes Task 4
 colnames(X_train) <- features[, 2]
 colnames(y_train) <- 'activityID'
 colnames(subject_train) <- 'subjectID'
@@ -39,7 +47,8 @@ X_test = read.table('./dataset/UCI HAR Dataset/test/X_test.txt')
 y_test = read.table('./dataset/UCI HAR Dataset/test/y_test.txt')
 subject_test = read.table('./dataset/UCI HAR Dataset/test/subject_test.txt')
 
-# Assigning colnames to test variables
+# 1.3: Assigning colnames to test variables
+# Note that this part accomplishes Task 4
 colnames(X_test) <- features[, 2]
 colnames(y_test) <- 'activityID'
 colnames(subject_test) <- 'subjectID'
@@ -78,5 +87,22 @@ df_mean_std_summary <- final_data[, all_mean_sdt_cols]
 
 ## Task 3: Use descriptive activity names to name the activities in the data set
 
-# Check activity current names
+# Merging activity_labels with current dataset
+df_with_activity_names <- merge(df_mean_std_summary, activity_labels, by = 'activityID', all.x = T)
+
+
+## Task 4: Use descriptive activity names to name the activities in the data set
+## Already done, see sections 1.2 and 1.3
+
+
+## Task 5: From the data set in step 4, creates a second, independent tidy data set 
+## with the average of each variable for each activity and each subject.
+
+# tidy_data <- aggregate(. ~ subjectID + activityID, df_with_activity_names, mean)
+
+tidy_data <- df_with_activity_names %>% 
+  group_by(subjectID, activityID) %>% 
+  summarise_each(mean)
+
+write.table(tidy_data, './tidy_data.txt', row.names = F)
 
