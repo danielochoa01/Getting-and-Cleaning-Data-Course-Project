@@ -3,6 +3,9 @@
 This repo was created in order to submit the assignment for Week 4 of
 Getting and Cleaning Data Course.
 
+### How the script works
+First of all, the script check if the zip file containing the dataset exists, if not it downloads it. Then the script unzips the file into a directory called dataset.
+Finally it processes all the transformations listed on Codebook.md
 
 ### Files contained in this repo
 
